@@ -15,7 +15,7 @@ class F1:
 
         conn = pymysql.connect(
             user="root",
-            password="dbuserdbuser",
+            password="123456",
             host="localhost",
             cursorclass=pymysql.cursors.DictCursor,
             autocommit=True

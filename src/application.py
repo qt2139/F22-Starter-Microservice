@@ -98,19 +98,19 @@ def delete_qualify(qualifyId):
 
 
 
-# @app.get("/api/health")
-# def get_health():
-#     t = str(datetime.now())
-#     msg = {
-#         "name": "F22-Starter-Microservice",
-#         "health": "Good",
-#         "at time": t
-#     }
-#
-#     # DFF TODO Explain status codes, content type, ... ...
-#     result = Response(json.dumps(msg), status=200, content_type="application/json")
-#
-#     return result
+@app.get("/api/health")
+def get_health():
+    t = str(datetime.now())
+    msg = {
+        "name": "F22-Starter-Microservice",
+        "health": "Good",
+        "at time": t
+    }
+
+    # DFF TODO Explain status codes, content type, ... ...
+    result = Response(json.dumps(msg), status=200, content_type="application/json")
+
+    return result
 
 
 @app.route("/api/students/<uni>", methods=["POST"])
@@ -126,5 +126,5 @@ def get_student_by_uni(uni):
     return rsp
 
 if __name__ == "__main__":
-    app.run(host="172.23.240.1", port=5011)
+    app.run(host="0.0.0.0", port=5011)
 
