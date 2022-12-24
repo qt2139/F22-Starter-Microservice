@@ -14,45 +14,50 @@ class F1:
         host = os.environ.get('DBHOST')
 
         conn = pymysql.connect(
-            user="root",
-            password="123456",
-            host="localhost",
+            user="admin",  # "root",
+            password='123456789',  # "123456",
+            host='qualify.cdlehdu4ibgc.us-east-1.rds.amazonaws.com',  # "localhost",
             cursorclass=pymysql.cursors.DictCursor,
             autocommit=True
         )
         return conn
 
-    @staticmethod
-    def get_qualifying(id):
+    def get_qualifying(self, id):
 
         sql = "SELECT * FROM f22_databases.qualify where qualifyId = %s" % (id);
-        conn = F1._get_connection()
+        conn = self._get_connection()
         cur = conn.cursor()
         res = cur.execute(sql)
         result = cur.fetchall()
+        if result:
+            return result
+        else:
+            return "Nothing Found."
 
-        return result
-
-    @staticmethod
-    def append_new_qualifying(data):
-
+    # @staticmethod
+    def append_new_qualifying(self, data):
+        if self.get_qualifying(data['qualifyId']) != "Nothing Found.":
+            return ("already exist")
         sql = "INSERT INTO f22_databases.qualify VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)";
-        conn = F1._get_connection()
+        conn = self._get_connection()
         cur = conn.cursor()
         try:
             conn.begin()
-            res = cur.execute(sql, (data['qualifyId'],data['raceId'],data['driverId'],data['constructorId'],data['number'],data['position'],data['q1'],data['q2'],data['q3']))
+            res = cur.execute(sql, (
+                data['qualifyId'], data['raceId'], data['driverId'], data['constructorId'], data['numbers'],
+                data['position'], data['q1'], data['q2'], data['q3']))
             conn.commit()
             cur.close()
             conn.close()
+            return "sucessfully add"
         except Exception as e:
             conn.rollback()
             return e
 
-    @staticmethod
-    def delete_qualifying(id):
+    # @staticmethod
+    def delete_qualifying(self, id):
         sql = "DELETE FROM f22_databases.qualify where qualifyId = %s";
-        conn = F1._get_connection()
+        conn = self._get_connection()
         cur = conn.cursor()
         try:
             conn.begin()
@@ -60,21 +65,26 @@ class F1:
             conn.commit()
             cur.close()
             conn.close()
+            return "Successfully deleted"
         except Exception as e:
             conn.rollback()
             return e
 
-    @staticmethod
-    def update_qualifying(name, value):
-        sql = "UPDATE f22_databases.qualify set driverId = %s where qualifyId = %s;"
-        conn = F1._get_connection()
+    # @staticmethod
+    def update_qualifying(self, data):
+        sql = "UPDATE f22_databases.qualify set raceId = %s, driverId = %s,constructorId = %s,numbers = %s,position = %s,q1 = %s,q2 = %s,q3 = %s where qualifyId = %s ;"
+        conn = self._get_connection()
         cur = conn.cursor()
         try:
             conn.begin()
-            res = cur.execute(sql, (value, name))
+            res = cur.execute(sql, (
+                data['raceId'], data['driverId'], data['constructorId'], data['numbers'], data['position'], data['q1'],
+                data['q2'], data['q3'], data['qualifyId']))
             conn.commit()
             cur.close()
             conn.close()
+            return "successfully update"
         except Exception as e:
             conn.rollback()
             return e
+
